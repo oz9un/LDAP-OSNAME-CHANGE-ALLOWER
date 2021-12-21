@@ -214,7 +214,7 @@ $opts .= "f:";
 
 $optSettings = array(
   "required:",
-);oz9un/LDAP-OSNAME-CHANGE-ALLOWER
+);
 
 $options = getopt($opts, $optSettings);
 
