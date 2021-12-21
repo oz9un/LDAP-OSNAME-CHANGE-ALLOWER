@@ -214,7 +214,7 @@ $opts .= "f:";
 
 $optSettings = array(
   "required:",
-);
+);oz9un/LDAP-OSNAME-CHANGE-ALLOWER
 
 $options = getopt($opts, $optSettings);
 
@@ -224,13 +224,3 @@ if ($options["f"]){
   setReadOSPermForEveryComputer($options["b"], $options["u"], $options["p"]);
 }
 
-
-/*
-$basedn = "dc=yeni,dc=lab";
-$conn = connectToLDAP("yeni.lab", "administrator", "Passw0rd");
-
-$justComputer = "ozzgun";
-$dacl = getNTSecDesc($conn, $justComputer, $basedn);
-$sd = daclParser($dacl);
-setNewDacl("CN=ozzgun,OU=ankara,DC=yeni,DC=lab", $sd, $conn);
-*/
