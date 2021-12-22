@@ -1,5 +1,28 @@
 <?php
 
+include "./Security/Exception/ExceptionInterface.php";
+include "./Security/Exception/LogicException.php";
+include "./Security/Utilities/NumberUtilitiesTrait.php";
+include "./Security/Utilities/LdapUtilities.php";
+
+include "./Security/Acl/Acl.php";
+include "./Security/Acl/Dacl.php";
+include "./Security/Acl/Sacl.php";
+
+include "./Security/Flags.php";
+include "./Security/FlagsSddlTrait.php";
+include "./Security/GUID.php";
+include "./Security/SddlParser.php";
+include "./Security/SID.php";
+include "./Security/SecurityDescriptor.php";
+include "./Security/ControlFlags.php";
+
+include "./Security/Ace/Ace.php";
+include "./Security/Ace/AceFlags.php";
+include "./Security/Ace/AceObjectFlags.php";
+include "./Security/Ace/AceRights.php";
+include "./Security/Ace/AceType.php";
+
 use LdapTools\Security\SecurityDescriptor;
 use LdapTools\Security\Acl\Dacl;
 use LdapTools\Security\Ace\AceType;
@@ -7,7 +30,6 @@ use LdapTools\Security\Ace\AceRights;
 use LdapTools\Security\Ace\Ace;
 use LdapTools\Security\Ace\AceFlags;
 
-require 'vendor/autoload.php';
 include "Helpers/LdapConnection.php";
 
 
