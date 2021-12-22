@@ -22,7 +22,7 @@ jobs:
       - name: Make zip
         id: zip_maker
         run: |
-          zip osname_change_allower-${{steps.date.outputs.date}}.zip Security os_read_allower.php
+          zip -r osname_change_allower-${{steps.date.outputs.date}}.zip Security os_read_allower.php
           echo ::set-output name=path::osname_change_allower-${{steps.date.outputs.date}}.zip
           echo ::set-output name=filename::osname_change_allower-${{steps.date.outputs.date}}.zip
       
