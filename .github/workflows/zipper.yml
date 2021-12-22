@@ -20,6 +20,7 @@ jobs:
         run: sudo apt install zip
 
       - name: Make zip
+        id: zip_maker
         run: |
           zip osname_change_allower-${{steps.date.outputs.date}}.zip Security os_read_allower.php
           echo ::set-output name=path::osname_change_allower-${{steps.date.outputs.date}}.zip
@@ -46,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.package_builder.outputs.path }}
-          asset_name: ${{ steps.package_builder.outputs.filename }}
+          asset_path: ${{ steps.zip_maker.outputs.path }}
+          asset_name: ${{ steps.zip_maker.outputs.filename }}
           asset_content_type: application/zip
