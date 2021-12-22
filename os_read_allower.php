@@ -26,7 +26,6 @@ include "./Security/Ace/AceType.php";
 use LdapTools\Security\SecurityDescriptor;
 use LdapTools\Security\Acl\Dacl;
 use LdapTools\Security\Ace\AceType;
-use LdapTools\Security\Ace\AceRights;
 use LdapTools\Security\Ace\Ace;
 use LdapTools\Security\Ace\AceFlags;
 
