@@ -32,9 +32,9 @@ use LdapTools\Security\Ace\AceFlags;
 include "Helpers/LdapConnection.php";
 
 
-function connectToLDAP($dc, $username, $password)
+function connectToLDAP($ip, $dc, $username, $password)
 {
-  $connection = ldap_connect("ldaps://{$dc}:636");
+  $connection = ldap_connect("ldaps://{$ip}:636");
   $LDAP_USER = $username."@".$dc;
   ldap_set_option ($connection, LDAP_OPT_REFERRALS, 0);
   ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -201,7 +201,7 @@ function getComputers($conn, $basedn, $filter, $attributes=array("ou"))
   return $computers;
 }
 
-function setReadOSPermForEveryComputer($dc, $username, $password, $base_dn=null){
+function setReadOSPermForEveryComputer($ip, $dc, $username, $password, $base_dn=null){
   $dc_parts = explode(".", $dc);
 
   if($base_dn == null) {
@@ -214,7 +214,7 @@ function setReadOSPermForEveryComputer($dc, $username, $password, $base_dn=null)
     $basedn = $base_dn;
   }
   
-  $conn = connectToLDAP($dc, $username, $password);
+  $conn = connectToLDAP($ip, $dc, $username, $password);
   $computerList = getComputers($conn, $basedn, "(objectclass=computer)");
 
   
@@ -229,6 +229,7 @@ function setReadOSPermForEveryComputer($dc, $username, $password, $base_dn=null)
 
 $opts = "";
 $opts .= "b:";
+$opts .= "i:";
 $opts .= "u:";
 $opts .= "p:";
 $opts .= "f:";
@@ -240,8 +241,8 @@ $optSettings = array(
 $options = getopt($opts, $optSettings);
 
 if ($options["f"]){
-  setReadOSPermForEveryComputer($options["b"], $options["u"], $options["p"], $options["f"]);
+  setReadOSPermForEveryComputer($options["i"], $options["b"], $options["u"], $options["p"], $options["f"]);
 } else{
-  setReadOSPermForEveryComputer($options["b"], $options["u"], $options["p"]);
+  setReadOSPermForEveryComputer($options["i"], $options["b"], $options["u"], $options["p"]);
 }
 
