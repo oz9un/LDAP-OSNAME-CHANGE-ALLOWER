@@ -39,3 +39,7 @@ php os_read_allower.php -b yeni.lab -u administrator -p Passw0rd -f "OU=ldaporg1
 ```bash
 php os_read_allower.php -b yeni.lab -u administrator -p Passw0rd
 ```
+
+## For future changes:
+
+os_read_allower should be a one-time operation. If you want to apply these changes for future computer objects; [default](https://github.com/oz9un/LDAP-OSNAME-CHANGE-ALLOWER/blob/main/DEFAULT_COMPUTER_OBJECT_SECURITY_DESCRIPTOR) security descriptor for computer object should be changed with the [modified](https://github.com/oz9un/LDAP-OSNAME-CHANGE-ALLOWER/blob/main/OS_PERM_COMPUTER_OBJECT_SECURITY_DESCRIPTOR).
