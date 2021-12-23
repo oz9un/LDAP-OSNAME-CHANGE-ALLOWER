@@ -21,23 +21,39 @@ As a result, we found that *two objects* need to be added -to the SELF- for Oper
 
 
 **objectType: 3e978925-8c01-11d0-afda-00c04fd930c9** indicates that we are changing **Operating System** attribute:
-<p align="center"><img src="https://user-images.githubusercontent.com/57866851/146934700-73f71a95-b9b3-448d-99ee-3e65e37335e7.png"/></p>
+<p align="center"><img width=800 height=400 src="https://user-images.githubusercontent.com/57866851/146934700-73f71a95-b9b3-448d-99ee-3e65e37335e7.png"/></p>
 
 
 ## How to use?
 
-os_read_allower has two main usage:
+os_read_allower has 6 parameters:
 
-1. Specify a target OU or object. It gives the permission to all computers under that OU.
+- **b** (Required): Base DN. Example: yeni.lab
+- **i** (Required): IPv4 address of the target DC. Example: 10.154.127.75
+- **u** (Required): Username for the LDAP connection. Example: Administrator
+- **p** (Required): Password for the LDAP connection. Example: Passw0rd
+- **d** (Optional): Specify a DN if you need to narrow the scope. Example: "ou=ankara,dc=yeni,dc=lab"
+- **f** (Optional): Specify a filter if you need to be more specific. Example: "(cn=warsaw)"
+
+---
+
+#### Usage examples:
+
+1. Specify a target OU or object. It gives the permission to all computers under that OU:
 
 ```bash
-php os_read_allower.php -b yeni.lab -u administrator -p Passw0rd -f "OU=ldaporg1,dc=yeni,dc=lab"
+php os_read_allower.php -b yeni.lab -u administrator -p Passw0rd -d "OU=adana,dc=yeni,dc=lab" -i "10.154.127.75"
 ```
 
-2. Don't specify any additional OU or object. It gives the permisson to all computers under the whole DN (ex: yeni.lab).
+2. Don't specify any additional OU or object. It gives the permisson to all computers under the whole DN (ex: yeni.lab):
 
 ```bash
-php os_read_allower.php -b yeni.lab -u administrator -p Passw0rd
+php os_read_allower.php -b yeni.lab -u administrator -p Passw0rd -i "10.154.127.75"
+```
+
+3. Use additional filter:
+```bash
+php os_read_allower.php -b yeni.lab -u administrator -p Passw0rd -d "OU=adana,dc=yeni,dc=lab" -i "10.154.127.75" -f "(cn=adanali)"
 ```
 
 ## For future changes:
