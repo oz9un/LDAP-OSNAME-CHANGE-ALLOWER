@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 include "./Security/Exception/ExceptionInterface.php";
 include "./Security/Exception/LogicException.php";
@@ -42,7 +43,8 @@ function connectToLDAP($ip, $dc, $username, $password)
 
   if($connection){
     if($ldapbind) {
-      echo "LDAP bind successfull!\n";
+      echo "\n\033[92m[+] \033[0m";
+      echo "\033[36mLDAP Bind Successfull. \033[0m\n";
     }
   }
 
@@ -58,6 +60,11 @@ function getNTSecDesc($connection, $computerName, $targetDN)
   $result = ldap_search($connection, $targetDN, $filter, $attributes);
   $data = ldap_get_entries($connection, $result);
   $dacl = $data[0]["ntsecuritydescriptor"][0];
+
+
+  echo "\033[92m[+] \033[0m";
+  echo "\033[36mFetching the NTSecurityDescriptor value of the target computer: \033[0m";
+  echo "\033[93m{$computerName} \033[0m";
 
   return base64_encode($dacl);
 }
@@ -175,6 +182,9 @@ function daclParser($b64dacl)
     }
   }
 
+  echo "\n\033[92m[+] \033[0m";
+  echo "\033[36mSDDL is parsed and new attributes are added. \033[0m";
+
   return $sd;
 }
 
@@ -183,6 +193,10 @@ function setNewDacl($computerName, $sd, $conn)
   ldap_mod_replace($conn, $computerName, [
     "nTSecurityDescriptor" => $sd->toBinary()
   ]);
+
+  echo "\n\033[92m[+] \033[0m";
+  echo "\033[36mNew NtSecurityDescriptor value set on the target computer: \033[0m";
+  echo "\033[93m{$computerName} \033[0m";
 
 }
 
@@ -201,7 +215,7 @@ function getComputers($conn, $basedn, $filter, $attributes=array("ou"))
   return $computers;
 }
 
-function setReadOSPermForEveryComputer($ip, $dc, $username, $password, $base_dn=null){
+function setReadOSPermForEveryComputer($ip, $dc, $username, $password, $base_dn, $additional_filters){
   $dc_parts = explode(".", $dc);
 
   if($base_dn == null) {
@@ -214,16 +228,33 @@ function setReadOSPermForEveryComputer($ip, $dc, $username, $password, $base_dn=
     $basedn = $base_dn;
   }
   
-  $conn = connectToLDAP($ip, $dc, $username, $password);
-  $computerList = getComputers($conn, $basedn, "(objectclass=computer)");
+  echo "\n\033[92m[+] \033[0m";
+  echo "\033[36mDetected Base DN: {$basedn} \033[0m";
 
+  echo "\n\033[92m[+] \033[0m";
+  echo "\033[36mFilter for LDAP search: \033[0m";
+  echo "\033[93m(&(objectclass=computer){$additional_filters})\033[0m";
+
+  $conn = connectToLDAP($ip, $dc, $username, $password);
+
+  $computerList = getComputers($conn, $basedn, "(&(objectclass=computer){$additional_filters})");
   
+  echo "\033[34m\n-------------------------------- \033[0m\n";  
+  echo "\033[92mFounded Computers: \033[0m\n\n";
+  foreach ($computerList as $computer) {
+    echo "\033[35m => \033[0m";
+    echo "\033[93m$computer\033[0m\n";
+  }
+  echo "\033[34m-------------------------------- \033[0m\n";  
+
   foreach($computerList as $computer)
   {
+    echo "\033[92m\n-------------------------------- \033[0m\n";  
     $justComputer = explode("=",explode(",", $computer)[0])[1];
     $dacl = getNTSecDesc($conn, $justComputer, $basedn);
     $sd = daclParser($dacl);
     setNewDacl($computer, $sd, $conn);
+    echo "\033[92m\n-------------------------------- \033[0m\n";  
   }
 }
 
@@ -232,6 +263,7 @@ $opts .= "b:";
 $opts .= "i:";
 $opts .= "u:";
 $opts .= "p:";
+$opts .= "d:";
 $opts .= "f:";
 
 $optSettings = array(
@@ -240,9 +272,13 @@ $optSettings = array(
 
 $options = getopt($opts, $optSettings);
 
-if ($options["f"]){
-  setReadOSPermForEveryComputer($options["i"], $options["b"], $options["u"], $options["p"], $options["f"]);
-} else{
-  setReadOSPermForEveryComputer($options["i"], $options["b"], $options["u"], $options["p"]);
+if (!$options["d"]){
+  $options["d"] = null;
 }
 
+if (!$options["f"]){
+  $options["f"] = "";
+}
+
+
+setReadOSPermForEveryComputer($options["i"], $options["b"], $options["u"], $options["p"], $options["d"], $options["f"]);
